@@ -11,9 +11,15 @@ How to install
 
 1. Create an Function App in the portal
 2. Create a new Function within your function app
-3. Get a oauth token for the portal
-4. Use Postman or Curl to post the following to the extensions endpoint of your function app, i.e. if you function app is called "mycoolfunctionapp", your url is "https://mycoolfunctionapp.azure.com/extension"
-5. check with the returned jobid, if the job to be completed / the extension is installed
+3. Get your functions url and you masterkey
+4. use Postman or Curl to post the following to the extensions endpoint of your function app. If you functions url is `https://mycoolfunctionapp.azurewebsites.net/api/HttpTrigger1?code=ABC` then your extensions endpoint is `https://mycoolfunctionapp.azurewebsites.net/admin/host/extensions?code=ABC`
+	```json
+	{
+		"Id":"SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams",
+		"Version": "0.0.3-alpha"
+	}
+	```
+5. check with the returned jobid, if the job to be completed / the extension is installed `https://mycoolfunctionapp.azurewebsites.net/admin/host/extensions/jobs/<JOBID>?code=ABC`
 6. setup your function.json with all the needed parameters
 7. start using the funtion
 

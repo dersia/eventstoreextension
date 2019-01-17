@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -11,7 +11,7 @@
     <PackageId>SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams</PackageId>
     <Description>Binding Extension for Azure Functions to access EventStore.org</Description>
     <Copyright>2019 Sia Consulting Ltd.</Copyright>
-    <PackageLicenseUrl>https://github.com/dersia/eventstoreextension/LICENSE.md</PackageLicenseUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/dersia/eventstoreextension</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dersia/eventstoreextension</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
@@ -22,6 +22,10 @@
   <ItemGroup>
     <PackageReference Include="EventStore.ClientAPI.NetCore" Version="4.1.1-rc" />
     <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\\..\\LICENSE" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>
