@@ -1,0 +1,26 @@
+{
+    "bindings": [
+      {
+        "authLevel": "function",
+        "name": "req",
+        "type": "httpTrigger",
+        "direction": "in",
+        "methods": [
+          "get",
+          "post"
+        ]
+      },
+      {
+        "name": "data",
+        "type": "eventStoreStreams",
+        "direction": "out",
+        "StreamName": "testStream",
+        "ConnectionStringSetting": "EventStoreConnection"
+      },
+      {
+        "name": "$return",
+        "type": "http",
+        "direction": "out"
+      }
+    ]
+  }

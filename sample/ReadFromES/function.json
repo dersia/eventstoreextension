@@ -1,0 +1,30 @@
+{
+    "bindings": [
+      {
+        "authLevel": "function",
+        "name": "req",
+        "type": "httpTrigger",
+        "direction": "in",
+        "methods": [
+          "get",
+          "post"
+        ]
+      },
+      {
+        "type": "eventStoreStreams",
+        "name": "eventStore",
+        "direction": "in",
+        "ConnectionStringSetting": "EventStoreConnection",
+        "StreamName": "abc",
+        "StreamOffset": -1,
+        "ReadSize": -1,
+        "ResolveLinkTos": false,
+        "StreamReadDirection": "Forward"
+      },
+      {
+        "name": "$return",
+        "type": "http",
+        "direction": "out"
+      }
+    ]
+  }
