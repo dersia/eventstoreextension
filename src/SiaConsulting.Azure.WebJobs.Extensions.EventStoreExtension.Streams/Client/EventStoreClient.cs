@@ -1,4 +1,5 @@
 ﻿using EventStore.ClientAPI;
+using Microsoft.Extensions.Logging;
 using SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,16 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Cli
         public EventStoreClient(string connUri, Microsoft.Extensions.Logging.ILogger logger)
         {
             var settings = ConnectionSettings.Create().UseCustomLogger(new EventStoreClientLogger(logger)).FailOnNoServerResponse().Build();
-            
-            _client = EventStoreConnection.Create(settings,new Uri(connUri));
+
+            try
+            {
+                _client = EventStoreConnection.Create(settings, new Uri(connUri));
+            }
+            catch (Exception esException)
+            {
+                logger.LogError(esException, esException.Message);
+                throw;
+            }
         }
 
         public Task Connect()

@@ -15,7 +15,7 @@
         "name": "eventStore",
         "direction": "in",
         "ConnectionStringSetting": "EventStoreConnection",
-        "StreamName": "abc",
+        "StreamName": "CobolIstDoofStream",
         "StreamOffset": -1,
         "ReadSize": -1,
         "ResolveLinkTos": false,

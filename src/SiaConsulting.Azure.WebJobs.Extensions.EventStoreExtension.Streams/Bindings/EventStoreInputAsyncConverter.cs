@@ -1,6 +1,9 @@
 ﻿using EventStore.ClientAPI;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
 using SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Client;
+using SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,19 +21,33 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Bin
 
         public async Task<IList<ResolvedEvent>> ConvertAsync(EventStoreStreamsAttribute config, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrWhiteSpace(config?.ConnectionStringSetting))
+            {
+                var esException = new EventStoreStreamsBindingException("ConnectionString cant be empty");
+                _logger.LogError(esException, esException.Message);
+                throw esException;
+            }
             using (var client = new EventStoreClient(config.ConnectionStringSetting, _logger))
             {
-                await client.Connect();
-                IList<ResolvedEvent> result = null;
-                if (config.StreamReadDirection == StreamReadDirection.Forward)
+                try
                 {
-                    result = await client.ReadFromStreamForward(config.StreamName, config.StreamOffset, config.ReadSize, config.ResolveLinkTos);
+                    await client.Connect();
+                    IList<ResolvedEvent> result = null;
+                    if (config.StreamReadDirection == StreamReadDirection.Forward)
+                    {
+                        result = await client.ReadFromStreamForward(config.StreamName, config.StreamOffset, config.ReadSize, config.ResolveLinkTos);
+                    }
+                    else
+                    {
+                        result = await client.ReadFromStreamBackward(config.StreamName, config.StreamOffset, config.ReadSize, config.ResolveLinkTos);
+                    }
+                    return result;
                 }
-                else
+                catch (Exception esException)
                 {
-                    result = await client.ReadFromStreamBackward(config.StreamName, config.StreamOffset, config.ReadSize, config.ResolveLinkTos);
-                }
-                return result;
+                    _logger.LogError(esException, esException.Message);
+                    throw;
+                }                
             }
         }
     }
