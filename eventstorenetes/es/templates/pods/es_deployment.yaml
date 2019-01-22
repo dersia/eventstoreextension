@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: es
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: es
+        escluster: es
+    spec:
+      containers:
+        - name: es
+          image: "eventstore/eventstore"
+          env:
+            - name: EVENTSTORE_INT_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: EVENTSTORE_EXT_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: EVENTSTORE_INT_TCP_PORT
+              value: "1114"
+            - name: EVENTSTORE_EXT_TCP_PORT
+              value: "1113"
+            - name: EVENTSTORE_INT_HTTP_PORT
+              value: "2114"
+            - name: EVENTSTORE_EXT_HTTP_PORT
+              value: "2113"
+            - name: EVENTSTORE_INT_HTTP_PREFIXES
+              value: "http://*:2114/"
+            - name: EVENTSTORE_EXT_HTTP_PREFIXES
+              value: "http://*:2113/"
+            - name: EVENTSTORE_DB
+              value: "/usr/data/eventstore/data"
+            - name: EVENTSTORE_LOG
+              value: "/usr/data/eventstore/log"
+          ports:
+            - containerPort: 2113
+            - containerPort: 2114
+            - containerPort: 1113
+            - containerPort: 1114
+          volumeMounts:
+            - mountPath: "/usr/data/eventstore"
+              name: espd
+      volumes:
+        - name: espd
+          persistentVolumeClaim:
+            claimName: azurefile

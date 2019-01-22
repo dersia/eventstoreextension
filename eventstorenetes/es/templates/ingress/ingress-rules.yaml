@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-rules
+  annotations:
+    kubernetes.io/ingress.class: addon-http-application-routing
+    nginx.org/websocket-services: "ws-svc"
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: DELETE, GET, POST, PUT, OPTIONS, HEAD
+    nginx.ingress.kubernetes.io/cors-allow-origin: '*'
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+spec:
+  rules:
+  - host: web.{{ .Values.aksClusterDns }}
+    http:
+      paths:
+      - backend:
+          serviceName: es
+          servicePort: 80
+        path: /
+  - host: stream.{{ .Values.aksClusterDns }}
+    http:
+      paths:
+      - backend:
+          serviceName: es
+          servicePort: 1113
+        path: /

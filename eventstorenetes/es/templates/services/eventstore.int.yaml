@@ -1,0 +1,21 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: es
+spec:
+  type: ClusterIP
+  selector:
+    escluster: "es"
+  ports:
+  - name: 'internal-http'
+    protocol: TCP
+    port: 2114
+    targetPort: 2114
+  - name: 'external-tcp'
+    protocol: TCP
+    port: 1113
+    targetPort: 1113
+  - name: 'internal-tcp'
+    protocol: TCP
+    port: 1114
+    targetPort: 1114
