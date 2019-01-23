@@ -45,6 +45,7 @@ Configname|Required|Default Value|Description
 ConnectionStringSetting|Yes|N/A|Name of the appsetting that holds the connection string to the EventStore i.e. `tcp://admin:password@myeventstore:1113`
 StreamName|Yes|N/A|Name fo the Stream to read from
 
+Version `0.0.4` of this extension is available on nuget.
 
 How to install
 
@@ -55,7 +56,7 @@ How to install
 	```json
 	{
 		"Id":"SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams",
-		"Version": "0.0.3-alpha"
+		"Version": "0.0.4"
 	}
 	```
 5. check with the returned jobid, if the job to be completed / the extension is installed `https://mycoolfunctionapp.azurewebsites.net/admin/host/extensions/jobs/<JOBID>?code=ABC`
