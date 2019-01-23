@@ -40,6 +40,7 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Bin
             catch(Exception esException)
             {
                 _logger.LogError(esException, esException.Message);
+                throw;
             }
         }
 
@@ -63,6 +64,7 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Bin
             catch(Exception esException)
             {
                 _logger.LogError(esException, esException.Message);
+                throw;
             }
             finally
             {
@@ -87,6 +89,7 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Bin
                 catch (Exception esException)
                 {
                     _logger.LogError(esException, esException.Message);
+                    throw;
                 }
                 finally
                 {
