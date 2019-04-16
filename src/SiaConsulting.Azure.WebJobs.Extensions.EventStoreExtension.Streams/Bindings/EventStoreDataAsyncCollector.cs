@@ -34,6 +34,14 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Bin
                 {
                     item.StreamName = _config.StreamName;
                 }
+                if(!string.IsNullOrWhiteSpace(_config.StreamNamePrefix))
+                {
+                    item.StreamName = $"{_config.StreamNamePrefix}{item.StreamName}";
+                }
+                if (!string.IsNullOrWhiteSpace(_config.StreamNameSuffix))
+                {
+                    item.StreamName = $"{item.StreamName}{_config.StreamNameSuffix}";
+                }
                 if (!_runningTransactions.ContainsKey(item.StreamName))
                 {
                     var trans = await _eventStoreClient.StartTransaction(item.StreamName, item.ExpectedStreamVersion).ConfigureAwait(false);

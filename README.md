@@ -6,6 +6,16 @@ For input you can use `IList<ResolvedEvent>` don't forget the using statement `u
 
 Important: the output binding uses transactions, this means, that the added events will only be flushed, if the function completes successfully
 
+# Changelog
+## Version 0.0.6 - bugfixes + enhanced streamnames
+* Fixed error "default streamname not working for writes": for out operations binding will now use streamname from `function.json` as default streamname, if no streamname is provided for `EventStoreData`.
+* Added Prefix and Suffix for streamnames 
+  * new config optional `StreamNamePrefix` can now be set to prefix a streamname for input and output bindings
+  * new config optional `StreamNameSuffix` can now be set to suffix a streamname for input and output bindings
+## Version 0.0.4 - first release
+* Added binding extensions for EventStore input and output binding
+* Added NugetPackage to NuGet.org
+
 Sample function.json config for input bindig
 ```json
 {
@@ -13,7 +23,9 @@ Sample function.json config for input bindig
 	"name": "eventStore",
 	"direction": "in",
 	"ConnectionStringSetting": "EventStoreConnection",
-	"StreamName": "CobolIstDoofStream",
+	"StreamName": "CobolIstDoofStream", //default for output 0.0.6
+	"StreamNamePrefix": "Prefix-", //optional for prefixing streamnames 0.0.6
+	"StreamNameSuffix": "-Suffix", //optional for suffixing streamnames 0.0.6
 	"StreamOffset": -1,
 	"ReadSize": -1,
 	"ResolveLinkTos": false,
@@ -45,7 +57,7 @@ Configname|Required|Default Value|Description
 ConnectionStringSetting|Yes|N/A|Name of the appsetting that holds the connection string to the EventStore i.e. `tcp://admin:password@myeventstore:1113`
 StreamName|Yes|N/A|Name fo the Stream to read from
 
-Version `0.0.4` of this extension is available on nuget.
+Version `0.0.6` of this extension is available on nuget.
 
 How to install
 
@@ -56,7 +68,7 @@ How to install
 	```json
 	{
 		"Id":"SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams",
-		"Version": "0.0.4"
+		"Version": "0.0.6"
 	}
 	```
 5. check with the returned jobid, if the job to be completed / the extension is installed `https://mycoolfunctionapp.azurewebsites.net/admin/host/extensions/jobs/<JOBID>?code=ABC`
