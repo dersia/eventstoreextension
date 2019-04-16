@@ -9,16 +9,24 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Cli
 {
     public class EventStoreClient : IEventStoreClient
     {
-        private readonly IEventStoreConnection _client;
+        private IEventStoreConnection _client;
         private readonly Microsoft.Extensions.Logging.ILogger _logger;
 
         public EventStoreClient(string connUri, Microsoft.Extensions.Logging.ILogger logger)
         {
-            var settings = ConnectionSettings.Create().UseCustomLogger(new EventStoreClientLogger(logger)).FailOnNoServerResponse().Build();
+            _logger = logger;
+            var settings = ConnectionSettings.Create().UseCustomLogger(new EventStoreClientLogger(_logger)).FailOnNoServerResponse().Build();
 
             try
             {
                 _client = EventStoreConnection.Create(settings, new Uri(connUri));
+                _client.AuthenticationFailed += this.Handle_AuthenticationFailed;
+                _client.Closed += this.Handle_Closed;
+                _client.Connected += this.Handle_Connected;
+                _client.Disconnected += this.Handle_Disconnected;
+                _client.ErrorOccurred += this.Handle_ErrorOccurred;
+                _client.Reconnecting += this.Handle_Reconnecting;
+                
             }
             catch (Exception esException)
             {
@@ -26,6 +34,13 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Cli
                 throw;
             }
         }
+
+        public event EventHandler<ClientConnectionEventArgs> Connected;
+        public event EventHandler<ClientConnectionEventArgs> Disconnected;
+        public event EventHandler<ClientAuthenticationFailedEventArgs> AuthenticationFailed;
+        public event EventHandler<ClientClosedEventArgs> Closed;
+        public event EventHandler<ClientErrorEventArgs> ErrorOccurred;
+        public event EventHandler<ClientReconnectingEventArgs> Reconnecting;
 
         public Task Connect()
             => _client.ConnectAsync(); 
@@ -94,8 +109,49 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Cli
 
         public void Dispose()
         {
+            if(_client != null)
+            {
+                _client.AuthenticationFailed -= this.Handle_AuthenticationFailed;
+                _client.Closed -= this.Handle_Closed;
+                _client.Connected -= this.Handle_Connected;
+                _client.Disconnected -= this.Handle_Disconnected;
+                _client.ErrorOccurred -= this.Handle_ErrorOccurred;
+                _client.Reconnecting -= this.Handle_Reconnecting;
+            }
             _client.Close();
             _client.Dispose();
+            _client = null;
+        }
+
+        private void Handle_Reconnecting(object sender, ClientReconnectingEventArgs e)
+        {
+            _logger?.LogTrace($"Reconnecting: {e.Connection.ConnectionName}");
+            Reconnecting?.Invoke(sender, e);
+        }
+        private void Handle_ErrorOccurred(object sender, ClientErrorEventArgs e)
+        {
+            _logger?.LogError(e.Exception, $"ErrorOccurred: {e.Exception.ToString()}");
+            ErrorOccurred?.Invoke(sender, e);
+        }
+        private void Handle_Disconnected(object sender, ClientConnectionEventArgs e)
+        {
+            _logger?.LogTrace($"Disconnected from {e.RemoteEndPoint.ToString()}: {e.Connection.ConnectionName}");
+            Disconnected?.Invoke(sender, e);
+        }
+        private void Handle_Connected(object sender, ClientConnectionEventArgs e)
+        {
+            _logger?.LogTrace($"Connected to {e.RemoteEndPoint.ToString()}: {e.Connection.ConnectionName}");
+            Connected?.Invoke(sender, e);
+        }
+        private void Handle_Closed(object sender, ClientClosedEventArgs e)
+        {
+            _logger?.LogTrace($"Connection Closed due to {e.Reason}: {e.Connection.ConnectionName}");
+            Closed?.Invoke(sender, e);
+        }
+        private void Handle_AuthenticationFailed(object sender, ClientAuthenticationFailedEventArgs e)
+        {
+            _logger?.LogError(new EventStoreStreamsBindingException($"Authentication failed due to {e.Reason}"),$"AuthenticationFailed due to {e.Reason}: {e.Connection.ConnectionName}");
+            AuthenticationFailed?.Invoke(sender, e);
         }
     }
 }

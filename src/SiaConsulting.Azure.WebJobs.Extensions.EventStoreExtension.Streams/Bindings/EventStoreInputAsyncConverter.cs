@@ -33,13 +33,14 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Bin
                 {
                     await client.Connect();
                     IList<ResolvedEvent> result = null;
+                    var streamname = GetStreamName(config);
                     if (config.StreamReadDirection == StreamReadDirection.Forward)
                     {
-                        result = await client.ReadFromStreamForward(config.StreamName, config.StreamOffset, config.ReadSize, config.ResolveLinkTos);
+                        result = await client.ReadFromStreamForward(streamname, config.StreamOffset, config.ReadSize, config.ResolveLinkTos);
                     }
                     else
                     {
-                        result = await client.ReadFromStreamBackward(config.StreamName, config.StreamOffset, config.ReadSize, config.ResolveLinkTos);
+                        result = await client.ReadFromStreamBackward(streamname, config.StreamOffset, config.ReadSize, config.ResolveLinkTos);
                     }
                     return result;
                 }
@@ -50,5 +51,7 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Bin
                 }                
             }
         }
+
+        private string GetStreamName(EventStoreStreamsAttribute config) => $"{config.StreamNamePrefix}{config.StreamName}{config.StreamNameSuffix}";
     }
 }
