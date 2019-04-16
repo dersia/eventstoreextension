@@ -17,15 +17,18 @@ Important: the output binding uses transactions, this means, that the added even
 * Added NugetPackage to NuGet.org
 
 Sample function.json config for input bindig
-```json
+```json5
 {
 	"type": "eventStoreStreams",
 	"name": "eventStore",
 	"direction": "in",
 	"ConnectionStringSetting": "EventStoreConnection",
-	"StreamName": "CobolIstDoofStream", //default for output 0.0.6
-	"StreamNamePrefix": "Prefix-", //optional for prefixing streamnames 0.0.6
-	"StreamNameSuffix": "-Suffix", //optional for suffixing streamnames 0.0.6
+	//default for output 0.0.6
+	"StreamName": "CobolIstDoofStream",
+	//optional for prefixing streamnames 0.0.6
+	"StreamNamePrefix": "Prefix-",
+	//optional for suffixing streamnames 0.0.6
+	"StreamNameSuffix": "-Suffix",
 	"StreamOffset": -1,
 	"ReadSize": -1,
 	"ResolveLinkTos": false,
