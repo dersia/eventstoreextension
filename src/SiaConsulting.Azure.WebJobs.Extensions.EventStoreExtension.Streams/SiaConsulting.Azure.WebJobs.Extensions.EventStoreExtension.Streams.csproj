@@ -5,7 +5,7 @@
     <AssemblyName>SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams</AssemblyName>
     <RootNamespace>SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.0-alpha0002</Version>
+    <Version>0.1.0-alpha0003</Version>
     <Authors>Sia Consulting Ltd.</Authors>
     <Product>Azure Functions EventStoreBinding</Product>
     <PackageId>SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams</PackageId>

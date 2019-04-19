@@ -8,6 +8,7 @@ using Microsoft.Azure.WebJobs.Host.Bindings;
 using static SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Converter.CommonConverter;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Converter
 {
@@ -17,6 +18,7 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Converter
         {
             return context
                 .AddJsonConverter(logger)
+                .AddByteArrayConverter(logger)
                 .AddEventDataConverter(logger)
                 .AddJObjectConverter(logger)
                 .AddDynamicConverter(logger)
@@ -49,6 +51,9 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Converter
                                                                 }
                                                                 return BuildFromEventData(BuildFromPayload(payload, logger));
                                                             });
+
+        public static ExtensionConfigContext AddByteArrayConverter(this ExtensionConfigContext context, Microsoft.Extensions.Logging.ILogger logger)
+            => context.AddConverter<byte[], string>(Encoding.UTF8.GetString);
 
         public static ExtensionConfigContext AddEventDataConverter(this ExtensionConfigContext context, Microsoft.Extensions.Logging.ILogger logger) 
             => context.AddConverter<EventData, EventStoreData>(BuildFromEventData);
