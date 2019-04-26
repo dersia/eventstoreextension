@@ -77,12 +77,12 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Converter
             => context.AddConverter<ResolvedEvent, string>(re => ToJObject(re, logger).ToString());
 
         public static ExtensionConfigContext AddResolvedEventListToStringConverter(this ExtensionConfigContext context, Microsoft.Extensions.Logging.ILogger logger)
-            => context.AddConverter<IList<ResolvedEvent>, string>(re => JArray.FromObject(re.Select(e => ToJObject(e, logger))).ToString());
+            => context.AddConverter<IList<ResolvedEvent>, string>(re => re == null ? null : JArray.FromObject(re.Select(e => ToJObject(e, logger))).ToString());
 
         public static ExtensionConfigContext AddResolvedEventToByteArrayConverter(this ExtensionConfigContext context, Microsoft.Extensions.Logging.ILogger logger)
             => context.AddConverter<ResolvedEvent, byte[]>(re => re.Event?.Data);
 
         public static ExtensionConfigContext AddResolvedEventListToByteArrayListConverter(this ExtensionConfigContext context, Microsoft.Extensions.Logging.ILogger logger)
-            => context.AddConverter<IList<ResolvedEvent>, IList<byte[]>>(re => re.Where(e => e.Event?.Data != null).Select(e => e.Event.Data).ToList());
+            => context.AddConverter<IList<ResolvedEvent>, IList<byte[]>>(re => re?.Where(e => e.Event?.Data != null).Select(e => e.Event.Data).ToList());
     }
 }

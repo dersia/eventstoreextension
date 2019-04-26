@@ -83,7 +83,7 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Cli
             {
                 return await _client.ReadStreamEventsForwardAsync(readStreamName, readStart == -1 ? StreamPosition.Start : readStart, readCount == -1 ? 1000 : readCount, readResolveLinkTos);
             }
-            return results == null || results.Status != SliceReadStatus.Success ? throw new EventStoreStreamsBindingException($"Unable to read from Stream: '{results.Status}'") : events;
+            return results == null || results.Status != SliceReadStatus.Success ? throw HandleError(results.Status) : events;
         }
 
         public async Task<IList<ResolvedEvent>> ReadFromStreamBackward(string streamName, long start, int count, bool resolveLinkTos)
@@ -104,7 +104,7 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Cli
             {                
                 return await _client.ReadStreamEventsBackwardAsync(readStreamName, readStart == -1 ? StreamPosition.End : readStart, readCount == -1 ? 1000 : readCount, readResolveLinkTos);
             }
-            return results == null || results.Status != SliceReadStatus.Success ? throw new EventStoreStreamsBindingException($"Unable to read from Stream: '{results.Status}'") : events;
+            return results == null || results.Status != SliceReadStatus.Success ? throw HandleError(results.Status) : events;
         }
 
         public void Dispose()
@@ -121,6 +121,16 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Cli
             _client.Close();
             _client.Dispose();
             _client = null;
+        }
+
+        private EventStoreStreamsBindingException HandleError(SliceReadStatus error)
+        {
+            switch(error)
+            {
+                case SliceReadStatus.StreamDeleted: return new EventStoreStreamsBindingStreamDeletedException($"Unable to read from Stream: '{nameof(SliceReadStatus.StreamDeleted)}'");
+                case SliceReadStatus.StreamNotFound: return new EventStoreStreamsBindingStreamNotFoundException($"Unable to read from Stream: '{nameof(SliceReadStatus.StreamNotFound)}'");
+                default: return new EventStoreStreamsBindingException($"This is really an unexpected error!");
+            }
         }
 
         private void Handle_Reconnecting(object sender, ClientReconnectingEventArgs e)
