@@ -7,6 +7,20 @@ For input you can use `IList<ResolvedEvent>` don't forget the using statement `u
 Important: the output binding uses transactions, this means, that the added events will only be flushed, if the function completes successfully
 
 # Changelog
+## Version 0.1.1 - bugfixes
+* Fixed a bug where input binding fails, if the stream was deleted or does not exists 
+## Version 0.1.0 - bugfixes + enhanced Types
+* Fixed an error where input-bindings were not working with node-worker
+* Fixed an error where output-bindings were not working with node-worker
+* Added new Types for input and output bindings
+	* Added support for `IAsyncCollector<EventData>`
+	* Added support for `IAsyncCollector<string>`
+	* Added support for `IAsyncCollector<byte[]>`
+	* Added support for `IAsyncCollector<T>`
+	* Added support for `IList<string>`
+	* Added support for `IList<byte[]>`
+	* Added support for `IList<T>`
+
 ## Version 0.0.6 - bugfixes + enhanced streamnames
 * Fixed error "default streamname not working for writes": for out operations binding will now use streamname from `function.json` as default streamname, if no streamname is provided for `EventStoreData`.
 * Added Prefix and Suffix for streamnames 
@@ -40,6 +54,8 @@ Configname|Required|Default Value|Description
 ----------|--------|-------------|-----------
 ConnectionStringSetting|Yes|N/A|Name of the appsetting that holds the connection string to the EventStore i.e. `tcp://admin:password@myeventstore:1113`
 StreamName|Yes|N/A|Name fo the Stream to read from
+StreamNamePrefix|No|`string.Empty`|Set a Prefix for streamnames. The Prefix is added to every streamname, not just the default streamname in case of output-binding and the use of `EventStoreData`
+StreamNameSuffix|No|`string.Empty`|Set a Prefix for streamnames. The Suffix is added to every streamname, not just the default streamname in case of output-binding and the use of `EventStoreData`
 StreamOffset|No|-1|Offset of the Stream reading from. -1 means from beginning
 ReadSize|No|-1|Number of events to read. -1 means all events starting at offset
 ResolveLinkTos|No|false|Resolve EventStore Links
