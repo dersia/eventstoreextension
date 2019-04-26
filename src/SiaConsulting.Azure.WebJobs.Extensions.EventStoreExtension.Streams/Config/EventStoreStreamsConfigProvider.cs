@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using Microsoft.Azure.WebJobs;
+using SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Converter;
 
 namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Config
 {
@@ -31,9 +32,8 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams.Con
 
             context.AddConverter<string, JObject>(JObject.FromObject);
             context.AddConverter<JObject, ResolvedEvent?>(input => input.ToObject<ResolvedEvent?>());
-            context.AddConverter<JObject, EventData>(input => input.ToObject<EventData>());
             context.AddConverter<JObject, IList<ResolvedEvent>>(input => input.ToObject<IList<ResolvedEvent>>());
-            context.AddConverter<IList<ResolvedEvent>, JObject>(JObject.FromObject);
+            context.AddAllConverters(_logger);
 
             var eventStoreAttributeRule = context.AddBindingRule<EventStoreStreamsAttribute>();
             eventStoreAttributeRule.BindToInput<IList<ResolvedEvent>>(new EventStoreInputAsyncConverter(_logger));
