@@ -9,8 +9,11 @@ namespace SiaConsulting.Azure.WebJobs.Extensions.EventStoreExtension.Streams
     {
         [AppSetting]
         public string ConnectionStringSetting { get; set; }
+        [AutoResolve]
         public string StreamName { get; set; }
+        [AutoResolve]
         public string StreamNamePrefix { get; set; }
+        [AutoResolve]
         public string StreamNameSuffix { get; set; }
         public long StreamOffset { get; set; } = 0;
         public int ReadSize { get; set; } = -1;
