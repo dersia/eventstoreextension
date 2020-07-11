@@ -12,14 +12,28 @@ metadata:
     nginx.ingress.kubernetes.io/enable-cors: "true"
 spec:
   rules:
-  - host: web.{{ .Values.aksClusterDns }}
+  - host: web.1879a2a66e4247f68450.westeurope.aksapp.io
     http:
       paths:
       - backend:
           serviceName: es
-          servicePort: 80
+          servicePort: 2113
         path: /
-  - host: stream.{{ .Values.aksClusterDns }}
+  - host: web2.1879a2a66e4247f68450.westeurope.aksapp.io
+    http:
+      paths:
+      - backend:
+          serviceName: es2
+          servicePort: 2123
+        path: /
+  - host: web3.1879a2a66e4247f68450.westeurope.aksapp.io
+    http:
+      paths:
+      - backend:
+          serviceName: es3
+          servicePort: 2133
+        path: /
+  - host: stream.1879a2a66e4247f68450.westeurope.aksapp.io
     http:
       paths:
       - backend:

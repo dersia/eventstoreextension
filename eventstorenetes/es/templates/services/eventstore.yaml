@@ -3,11 +3,11 @@ apiVersion: v1
 metadata:
   name: es
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector:
     escluster: "es"
   ports:
   - name: 'external-http'
     protocol: TCP
-    port: 80
+    port: 2113
     targetPort: 2113

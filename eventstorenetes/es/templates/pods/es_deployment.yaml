@@ -1,17 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: es
+  name: es3
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: es
-        escluster: es
+        app: es3
+        escluster: es3
     spec:
       containers:
-        - name: es
+        - name: es3
           image: "eventstore/eventstore"
           env:
             - name: EVENTSTORE_INT_IP
@@ -43,10 +43,3 @@ spec:
             - containerPort: 2114
             - containerPort: 1113
             - containerPort: 1114
-          volumeMounts:
-            - mountPath: "/usr/data/eventstore"
-              name: espd
-      volumes:
-        - name: espd
-          persistentVolumeClaim:
-            claimName: azurefile
